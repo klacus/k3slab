@@ -1,0 +1,8 @@
+spec:
+  disks:
+    disk-data:
+      allowScheduling: true
+      evictionRequested: false
+      path: /mnt/data
+      storageReserved: 0
+      tags: []

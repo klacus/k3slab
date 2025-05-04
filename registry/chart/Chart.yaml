@@ -1,0 +1,15 @@
+apiVersion: v2
+version: 1.0.0
+name: registry
+appVersion: 3
+description: Basic container image registry for home labs.
+keywords:
+- registry
+- container images
+- container image registry
+maintainers:
+- email: laszlo.jobs@gmail.com
+  name: Laszlo Kohl
+sources:
+- https://hub.docker.com/_/registry
+

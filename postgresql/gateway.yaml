@@ -1,0 +1,44 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: traefik # A unique name for this GatewayClass
+spec:
+  controllerName: "traefik.io/gateway-controller" # Replace with the actual controller name
+  # description: "A simple GatewayClass for HTTP traffic" # Optional description
+  # parametersRef: # Optional: Reference to a parameters resource
+  #   group: example.com
+  #   kind: GatewayClassConfig
+  #   name: traefik-parameters
+  #   namespace: default # Required if parametersRef is namespaced
+--- 
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: postgresql-gateway
+  namespace: hello
+spec:
+  gatewayClassName: traefik # Replace with your GatewayClass name
+  listeners:
+    - name: postgresql
+      protocol: TCP
+      port: 15432
+      allowedRoutes:
+        namespaces:
+          from: Same
+---
+apiVersion: gateway.networking.k8s.io/v1alpha2
+kind: TCPRoute
+metadata:
+  name: postgresql-route
+  namespace: hello
+spec:
+  parentRefs:
+    - name: postgresql-gateway
+      sectionName: postgresql
+      kind: Gateway
+  rules:
+    - backendRefs:
+        - kind: Service
+          name: rjpgsql-cluster-rw 
+          namespace: hello
+          port: 5432

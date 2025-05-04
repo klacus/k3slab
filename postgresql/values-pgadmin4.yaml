@@ -1,0 +1,57 @@
+image:
+  registry: docker.io
+  repository: dpage/pgadmin4
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: "9.3"
+
+serverDefinitions:
+  enabled: true
+  servers:
+   firstServer:
+     Name: "K3s Lab Database"
+     Group: "Servers"
+     Username: "postgres"
+     # Password is auto generated.
+     Host: "k3slabsql-cluster-rw"
+     Port: "5432"
+     SSLMode: "prefer"
+     MaintenanceDB: "postgres"
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    cert-manager.io/cluster-issuer: my-ca-issuer
+    cert-manager.io/common-name: "pgadmin.services.labk3s.perihelion.lan/"
+    cert-manager.io/subject-organizations: "Pannon Systems"
+    cert-manager.io/subject-organizationalunits: "PgAdmin4 on K3s Lab PostgreSQL database"
+    cert-manager.io/duration: 720h
+    cert-manager.io/renew-before: 240h
+    cert-manager.io/usages: "digital signature,key agreement,server auth, client auth"
+  hosts:
+    - host: pgadmin.services.labk3s.perihelion.lan
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+   - secretName: pgadmin4-tls
+     hosts:
+       - pgadmin.services.labk3s.perihelion.lan
+
+env:
+  # You should change the email and password here.
+  email: admin@example.com
+  password: Dkaujdh6Gsot$2
+  # enhanced_cookie_protection: "True"
+
+persistentVolume:
+  enabled: true
+  size: 1Gi
+
+containerSecurityContext:
+  enabled: true
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi

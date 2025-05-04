@@ -1,0 +1,34 @@
+registry:
+# Disabling opentelemetry, otherwise the registry container will continuously throw errors. 
+  disableOpenTelemetry: true
+
+ui:
+  allowDelete: true
+  registryTitle: "K3s Lab Container Image Registry"
+
+ingress:
+  registry:
+    host: "registry.services.labk3s.perihelion.lan"
+    annotations:
+      # add an annotation indicating the issuer to use.
+      cert-manager.io/cluster-issuer: my-ca-issuer
+      # configuring the certificate
+      cert-manager.io/common-name: "registry.services.labk3s.perihelion.lan/"
+      cert-manager.io/subject-organizations: "Home Lab"
+      cert-manager.io/subject-organizationalunits: "K3s Lab Container Image Registry"
+      cert-manager.io/duration: 720h
+      cert-manager.io/renew-before: 240h
+      cert-manager.io/usages: "digital signature,key agreement,server auth, client auth"
+  ui:
+    host: "registryui.services.labk3s.perihelion.lan"
+    annotations:
+      # add an annotation indicating the issuer to use.
+      cert-manager.io/cluster-issuer: my-ca-issuer
+      # configuring the certificate
+      cert-manager.io/common-name: "registryui.services.labk3s.perihelion.lan/"
+      cert-manager.io/subject-organizations: "Home Lab"
+      cert-manager.io/subject-organizationalunits: "K3s Lab Container Image Registry UI"
+      cert-manager.io/duration: 720h
+      cert-manager.io/renew-before: 240h
+      cert-manager.io/usages: "digital signature,key agreement,server auth, client auth"
+

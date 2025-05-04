@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fullName" . }}
+  labels:
+    {{- include "selectorLabels" . | nindent 6 }}
+spec:
+  # This is set to 1 for the following reason. One replica is enough for a home lab. If more needed then sysning the replicas is necessary!
+  replicas: 1
+  selector:
+    matchLabels:
+      {{- include "selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "selectorLabels" . | nindent 8 }}
+      annotations:
+      {{- with .Values.registry.annotations }}
+        {{- toYaml . | nindent 8 }}
+      {{- end }}        
+    spec:
+      containers:
+        - name: {{ include "fullName" . }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.imagePullPolicy }}
+          env:
+          {{- if .Values.registry.disableOpenTelemetry }}
+            - name: OTEL_SDK_DISABLED              
+              value: "true"
+            - name: OTEL_TRACES_EXPORTER
+              value: "none"
+          {{- end }}
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+            - name: debug
+              containerPort: 5001
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: images
+              mountPath: /var/lib/registry
+        {{- if .Values.ui.enabled }}
+        - name: ui
+          image: {{ .Values.ui.image.repository }}:{{ .Values.ui.image.tag }}
+          imagePullPolicy: {{ .Values.ui.image.pullPolicy }}
+          env:
+            - name: REGISTRY_TITLE
+              value: "{{ .Values.ui.registryTitle }}"
+            - name: NGINX_PROXY_PASS_URL
+              value: http://127.0.0.1:5000
+            - name: SHOW_CONTENT_DIGEST
+              value: "true"
+            - name: SHOW_CATALOG_NB_TAGS
+              value: "true"
+            {{- if .Values.ui.allowDelete }}
+            - name: DELETE_IMAGES
+              value: "true"
+            {{- end }}
+          ports:
+            - name: web
+              containerPort: 5002
+              protocol: TCP
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+        {{- end }}
+      volumes:
+        - name: images
+          persistentVolumeClaim: 
+            claimName: {{ .Values.name }}-pvc

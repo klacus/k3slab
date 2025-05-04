@@ -1,0 +1,49 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "fullName" . }}
+  annotations:
+    {{- with .Values.ingress.registry.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.registry.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "fullName" . }}
+            port:
+              number: 5000
+  tls:
+  - hosts:
+    - {{ .Values.ingress.registry.host }}
+    secretName: {{ include "fullName" . }}-cert
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ include "fullName" . }}-ui
+  annotations:
+    {{- with .Values.ingress.ui.annotations }}
+    {{- toYaml . | nindent 4 }}
+    {{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.ui.host }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ include "fullName" . }}-ui
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - {{ .Values.ingress.ui.host }}
+    secretName: {{ include "fullName" . }}-ui-cert

@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fullName" . }}
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fullName" . }}-ui
+spec:
+  type: ClusterIP
+  selector:
+    {{- include "selectorLabels" . | nindent 4 }}
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
