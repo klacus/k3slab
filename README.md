@@ -64,6 +64,7 @@ After reboot wait about 2-5 minutes after login, then start the network connecti
 
 __Note:__ This will cause the network to start slower after reboot on the machine compared not having a bridged connection set up on it, but there should not be any other impact.\
 You can check the ip address of your system by running the `ip a` command. You should see the IP address for the `bridge0` interface.
+
 ![Bridge0 IP Address](./pix/network09.png)
 
 
@@ -122,15 +123,35 @@ Or download the binary from https://github.com/derailed/k9s/releases and install
 Unfortunately this tool is not included in Linux distribution repositories.
 
 # Set up network router / firewall
+This solution assumes that the VMs have their own dedicated static IP addresses and hostnames. This way we do not have to worry about the IP addresses changing when the VMs are restarted. 
 
-1. static IPs and hostnames, talk about the ranges for DHCP and these IPs being outside of that
-2. VIP
-3. Host overrides, include all the aliases with description
-4. HAProxy
-
-...
-This VIP will be used to create an A record for the K3s cluster DNS name and aliases for the services running on the K3s cluster. This will be the IP address you will access the K3s Control Plane nodes and the workloads on the cluster through aliases. 
-
+The router / firewall should be configured to provide the following services:
+1. DHCP with static IP address mapping (reservations or MAC binding).\
+  If you are planning to use your network's DHCP server to assign IP addresses to the VMs, then you need to make sure that the DHCP server is configured to provide static IP addresses for the VMs. This can be done by creating a DHCP reservation for each VM based on its MAC address. The MAC and IP address of each VM can be found in the `configuration.sh` file.\
+![static mapping 1](./pix/staticmapping1.png)\
+![static mapping 2](./pix/staticmapping2.png)\
+2. Virtual IP (VIP) support.\
+  This solution uses a Virtual IP (VIP) to provide a single IP address for the K3s cluster. This VIP will be used to create an A record for the K3s cluster DNS name and aliases for the services running on the K3s cluster. This will be the IP address you will access the K3s Control Plane nodes and the workloads on the cluster through aliases. 
+  Later the HAProxy load balancer will bind to this VIP address and distribute the traffic to the K3s Control Plane and Agent nodes. The VIP should be configured to be accessible from your local network on your LAN interface, so that you can access the K3s cluster from your local network.\
+  ![VIP](./pix/vip.png)
+3. Local DNS resolution with the ability to define custom host A records and aliases.\
+  In your DNS server (Unbound in this example) you need to create a new A record for the K3s cluster. This A record should point to the VIP address you configured earlier. You can also create aliases for the services running on the K3s cluster. This will allow you to access the services using friendly names instead of IP addresses.\
+  ![dnsoverrides](./pix/dnsoverrides.png)
+4. Load balancing functionality (HAProxy).
+  This solution uses HAProxy to load balance the traffic to the K3s Control Plane and Agent nodes. The HAProxy service should be configured to start automatically on boot of the firewall/router. A sample configuration file is provided in the `haproxy` folder. You will need to update the hostnames in it to match the hostnames you configured in the `configuration.sh` file.\
+  You can manually add the backend and frontend definitions by:\
+  4.1. Adding the K3s node host names to the "Real Servers" section. Specify port 6443 for the control plane (Server) nodes and leave the port empty for the Agent nodes.\
+  ![realservers](./pix/realservers.png)\
+  4.2. In the Virtual Servers/Backend Pools section create a backend pool for your control plane nodes and add the control plane nodes to the list of servers name it accordingly like K3sLabServers. Do the same for the Agent nodes like K3sLabAgents. \
+  ![backendpools1](./pix/backendpools1.png)\
+  ![backendpools2](./pix/backendpools2.png)\
+  4.3. In the Virtual Servers/Public Services section create a new public services for the K3s cluster Server and Agents. 
+    4.3.1. For the Server nodes select the backend pool you created in the previous step and set the port to 6443.\
+    ![public service servers](./pix/publicservers.png)\
+    4.3.2. For the Agent nodes select the backend pool you created in the previous step and set the port to 80 and 433. \
+    Later you might add other ports if you run databases like Postgres and need the 5243 port for it (this is not the part of this exercise). \
+    ![public service agents](./pix/publicagents.png)\
+  4.4. In the Health Monitors section you can create a rule for the Servers using port 6443 and port 10520 for the Agent nodes. This is not required but it will help you to monitor the health of the nodes and allow the load balancer to exclude nodes that are not healthy. You can assign these rules to backend pools.
 
 # Deploy the K3s Kubernetes cluster
 
