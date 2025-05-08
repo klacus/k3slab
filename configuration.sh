@@ -21,7 +21,7 @@ K3SAGENTIPS=("192.168.1.204" "192.168.1.205" "192.168.1.206")
 K3SAGENTMACS=("52:54:00:25:79:40" "52:54:00:f4:ab:cd" "52:54:00:f4:ab:ce")
 
 # The Virtual IP and the hostname of the K3s lab Kubernetes cluster. We will use these for load balancing, managing K3s and accessing workload.
-# The K3s cluster FQDN.
+# The K3s cluster FQDN. Used to create the K3s certificate when deploying the cluster.
 K3SCLUSTERFQDN="lab-k3s.perihelion.lan" 
 # The cluster virtual IP (VIP).
 K3SCLUSTERIP="192.168.1.209" 
@@ -55,7 +55,7 @@ NOHOSTCHECKING="StrictHostKeyChecking no"
 VMUSER="developer" 
 
 # To show or hide libguestfs debug messages.
-# Exporting it needed!
+# Exporting it is needed!
 export DEBUGVMBUILD="no"
 
 # The fully qualified file name of the template VM image that will be used to create the K3s virtual machines using cloning.
@@ -107,6 +107,6 @@ TEMPLATEHOSTNAME="lab-k3s-template"
 K3SUPDLROOT="https://github.com/alexellis/k3sup/releases/download/"
 K3SUPVERSION="0.13.8"
 
-
 # The export for the KUBECONFIG is necessary so all tools access the K3s cluster.
+# This solution does not overwrite the default ~/.kube/config file, but creates a new one in the home directory.
 export KUBECONFIG=~/.kube/k3slab

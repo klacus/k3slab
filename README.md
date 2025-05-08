@@ -127,7 +127,7 @@ This solution assumes that the VMs have their own dedicated static IP addresses 
 
 The router / firewall should be configured to provide the following services:
 1. DHCP with static IP address mapping (reservations or MAC binding).\
-  If you are planning to use your network's DHCP server to assign IP addresses to the VMs, then you need to make sure that the DHCP server is configured to provide static IP addresses for the VMs. This can be done by creating a DHCP reservation for each VM based on its MAC address. The MAC and IP address of each VM can be found in the `configuration.sh` file.\
+  If you are planning to use your network's DHCP server to assign IP addresses to the VMs, then you need to make sure that the DHCP server is configured to provide static IP addresses for the VMs. This can be done by creating a DHCP reservation for each VM based on its MAC address. The MAC, IP address, and hostnames of each VM can be found in the `configuration.sh` file.\
 ![static mapping 1](./pix/staticmapping1.png)\
 ![static mapping 2](./pix/staticmapping2.png)\
 2. Virtual IP (VIP) support.\
@@ -142,10 +142,10 @@ The router / firewall should be configured to provide the following services:
   You can manually add the backend and frontend definitions by:\
   4.1. Adding the K3s node host names to the "Real Servers" section. Specify port 6443 for the control plane (Server) nodes and leave the port empty for the Agent nodes.\
   ![realservers](./pix/realservers.png)\
-  4.2. In the Virtual Servers/Backend Pools section create a backend pool for your control plane nodes and add the control plane nodes to the list of servers name it accordingly like K3sLabServers. Do the same for the Agent nodes like K3sLabAgents. \
+  4.2. In the Virtual Servers/Backend Pools section create a backend pool for your control plane nodes and add the control plane nodes to the list of servers name it accordingly like K3sLabServers. Do the same for the Agent nodes like K3sLabAgents. Select TCP (Layeer 4) for the Mode and Round Robin for Balabcing algorithm, then add your servers to the Servers list. \
   ![backendpools1](./pix/backendpools1.png)\
   ![backendpools2](./pix/backendpools2.png)\
-  4.3. In the Virtual Servers/Public Services section create a new public services for the K3s cluster Server and Agents. 
+  4.3. In the Virtual Servers/Public Services section create a new public services for the K3s cluster Server and Agents. \
     4.3.1. For the Server nodes select the backend pool you created in the previous step and set the port to 6443.\
     ![public service servers](./pix/publicservers.png)\
     4.3.2. For the Agent nodes select the backend pool you created in the previous step and set the port to 80 and 433. \
@@ -200,6 +200,10 @@ The IP addresses of the nodes need to be static and therefore can not be in the 
 The domain name part of the `K3SCLUSTERFQDN` variable must match your local network's domain name.
 
 The `K3SCLUSTERIP` variable must match the Virtual IP (VIP) configuration for your K3s lab on your network. This is the IP address you will access the K3s Control Plane nodes and the workloads on the cluster through aliases.
+
+VMTEMPLATEFILE VMIMAGEFOLDER !!!!!!!!!! needs to match where the file is located on the local machine
+
+Read throught the `configuration.sh` file and update the values to match your environment. The default values should work for most home networks. Get familiar with the variables and their role in the configuration. The script will use these values to configure the K3s cluster and the VMs.
 
 ## Build the VMs
 To build the virtual machines start a shell (like bash). Switch to the `buildnodes` directory and run the `buildnodes.sh` as root. This is the only command that needs to run as root on the machine hosting the VMs. This script will clone the template VM image, sysprep it for the actual nodes and then add them to the registered VMS in QUEMU. It creates an SSH key file that later will be used to remotely install K3s on the nodes.

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ../../configuration.sh
+
 echo "Removing old installation ..."
 kubectl delete -f podinfo.yaml --wait
 # the cert secret must be manually removed

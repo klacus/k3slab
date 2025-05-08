@@ -38,8 +38,8 @@ echo "Creating Root CA ..."
 kubectl apply -f ./selfsigned-ca.yaml --wait
 echo "Creating Root CA done."
 
-echo "Waiting 90 seconds for the certificates properly created ..."
-sleep 90
+echo "Waiting 60 seconds for the certificates properly created ..."
+sleep 60
 
 # export root CA so it can be imported to local OS and browsers.
 echo "Exporting certificates"
@@ -47,9 +47,10 @@ kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "ca
 kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.crt" | base64decode}}}' > k3slab-tls.crt
 kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.key" | base64decode}}}' > k3slab-tls.key
 
-# Deploy files to Root CA to K3s nodes.
+# Deploy the Root CA to K3s nodes.
+echo "Deployin root CA to K3s nodes ..."
 for node in "${K3SNODES[@]}"; do
-  echo "Copy Root CA to K3s node: $node ..."
+  echo "Copy Root CA to K3s node: ${node} ..."
   scp -i ~/.ssh/labk3s ./k3slab-ca.crt root@${node}:/usr/local/share/ca-certificates/
 
   echo "Adding k3slab-ca.crt to trusted certs on ${node} ..."
@@ -84,6 +85,7 @@ echo !!!
 echo !!!
 echo If you have docker running, you will need to restart it to pick up the new CA certificate.
 echo "sudo systemctl restart docker.service"
+sudo systemctl restart docker.service
 echo !!!
 echo !!!
 echo !!!

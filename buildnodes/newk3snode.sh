@@ -34,7 +34,7 @@ if [[ "${DEBUGVMBUILD}" == "yes"  ]]; then
   export LIBGUESTFS_DEBUG=1 LIBGUESTFS_TRACE=1
 fi
 
-# Create disk for permanent volumes
+# Create extra (additional to OS) disk for permanent volumes
 if [[ "${EXTRADISK}" == "yes" ]]; then
   DATAFILE="/vm/vms/${NEWNAME}-data.qcow2"
   DISKUUID=$(uuid)

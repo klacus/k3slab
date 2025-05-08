@@ -12,6 +12,7 @@ MYGID=$(id -g)
 sudo chown -R ${UID}:${MYGID} ${HOME}/.ssh
 
 # Disabling strict host checking on the local machine to be able to automated K3s deployment.
+# !!! IMPORTANT: Do not use this in anywhere else than in a home lab or other than development environment.
 if [[ -f ${SSHCONFIGFILE} ]]; then
   if grep -q "^StrictHostKeyChecking" ${SSHCONFIGFILE}; then
     sed -i "/^StrictHostKeyChecking/ c $NOHOSTCHECKING" ${SSHCONFIGFILE}
@@ -42,14 +43,15 @@ if ! command k3sup version 2>&1 >/dev/null; then
   chmod u+rwx ./k3sup
 fi
 
-# Add current forder to PATH, so we can run k3sup from here. Do not use export we dont want this to stick!
+# Add current forder to PATH, so we can run k3sup from here. Do not use export we don't want this to stick!
 PATH=.:${PATH}
 
+# Create the folder for kubeconfig if it does not exist.
 if [[ ! -d ~/.kube ]]; then
   mkdir ~/.kube
 fi
 
-# Install the rest of the Server (a.k.a. master) nodes. 
+# Install the the Server (a.k.a. master) nodes. 
 CURRENTSERVERNODE=0
 for newnode in "${K3SSERVERHOSTS[@]}"; do
 
@@ -108,7 +110,7 @@ echo "Waiting for 30 sec for all the nodes to join the cluster properly ..."
 sleep 30 
 kubectl get nodes
 
-echo "Enabling experimental Trraefik CRDs ..."
+# echo "Enabling experimental Traefik CRDs ..."
 # kubectl apply -f https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
 # curl -L -O https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
 # kubectl apply -f ./experimental-install.yaml
@@ -121,9 +123,9 @@ echo "Enabling experimental Trraefik CRDs ..."
 #     namespace: kube-system
 # # kubectl apply -f https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
 # curl -L -O https://raw.githubusercontent.com/traefik/traefik/v3.3/docs/content/reference/dynamic-configuration/kubernetes-gateway-rbac.yml
-echo "Adding RBAC definitions ..."
+echo "Adding RBAC definitions for Traefik Gateway API implementation ..."
 kubectl apply -f ./kubernetes-gateway-rbac.yaml
-echo "Patching traefik deployment ..."
+echo "Patching Traefik deployment to enable Gateway API ..."
 kubectl patch deployment traefik -n kube-system --type=json --patch-file ./traefik-patch.yaml
 # kubectl patch deployment traefik -n kube-system --type=json --patch-file ./traefik-patch-experimental.yaml
 

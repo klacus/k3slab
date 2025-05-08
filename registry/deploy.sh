@@ -1,5 +1,7 @@
 #!/bin/bash
 
+source ../configuration.sh
+
 helm uninstall registry -n registry
 echo "Longhorn will take some time to remove permanent volume waiting 30 seconds ..."
 sleep 30 
