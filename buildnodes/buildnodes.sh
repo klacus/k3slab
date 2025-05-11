@@ -15,7 +15,7 @@
 # This script will assume that you building or rebuilding an environment, so it will overwrite files without warning.
 # A template VM image created earlier and set up to be cloned to build the K3s nodes and has a basic OS (Debian 12 tested) installed with active SSH server and no swap partition.
 # The template VM does not have a swap partition, as then the cloned VM startup will be extremely slow every time. Some bug in these scripts or in virt-sysprep.
-# The hostname within the VM and the template image are the same as the VM name (like lab-k3sm1).
+# The hostname within the VM and the template image are the same as the VM name (like labk3sm1).
 # The VM image file names are the same as the VM hostname and the VM name in QEMU.
 
 # Description:

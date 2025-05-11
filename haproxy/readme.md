@@ -1,9 +1,9 @@
 Important that the Unbound DNS need to have the following
 1. overrides (A records) for 
 
-    1.1. lab-k3s.perihelion.lan for the control plane IP (192.168.1.209)
+    1.1. labk3s.perihelion.lan for the control plane IP (192.168.1.209)
 
-    1.2. then aliases on this host (lab-k3s.perihelion.lan) for the services 
+    1.2. then aliases on this host (labk3s.perihelion.lan) for the services 
     like nginxwebserver.services.labk3s.perihelion.lan
 
 Then in HA Proxy
@@ -56,7 +56,7 @@ defaults
 
 # Frontend: K3sLabControlPlane ()
 frontend K3sLabControlPlane
-    bind lab-k3s.perihelion.lan:6443 name lab-k3s.perihelion.lan:6443 
+    bind labk3s.perihelion.lan:6443 name labk3s.perihelion.lan:6443 
     mode tcp
     default_backend K3sLabServers
 
@@ -65,8 +65,8 @@ frontend K3sLabControlPlane
 
 # Frontend: K3sLabServices ()
 frontend K3sLabServices
-    bind lab-k3s.perihelion.lan:80 name lab-k3s.perihelion.lan:80 
-    bind lab-k3s.perihelion.lan:443 name lab-k3s.perihelion.lan:443 
+    bind labk3s.perihelion.lan:80 name labk3s.perihelion.lan:80 
+    bind labk3s.perihelion.lan:443 name labk3s.perihelion.lan:443 
     mode tcp
     default_backend K3sLabWorkers
 
@@ -81,9 +81,9 @@ backend K3sLabServers
     mode tcp
     balance roundrobin
 
-    server K3sLabM1 lab-k3sm1.perihelion.lan:6443 check inter 2s port 6443 
-    server K3sLabM2 lab-k3sm2.perihelion.lan:6443 check inter 2s port 6443 
-    server K3SLabM3 lab-k3sm3.perihelion.lan:6443 check inter 2s port 6443 
+    server K3sLabM1 labk3sm1.perihelion.lan:6443 check inter 2s port 6443 
+    server K3sLabM2 labk3sm2.perihelion.lan:6443 check inter 2s port 6443 
+    server K3SLabM3 labk3sm3.perihelion.lan:6443 check inter 2s port 6443 
 
 # Backend: K3sLabWorkers ()
 backend K3sLabWorkers
@@ -93,8 +93,8 @@ backend K3sLabWorkers
     mode tcp
     balance roundrobin
 
-    server K3sLabW1 lab-k3sw1.perihelion.lan check inter 2s port 80 
-    server K3sLabW2 lab-k3sw2.perihelion.lan check inter 2s port 80 
+    server K3sLabW1 labk3sw1.perihelion.lan check inter 2s port 80 
+    server K3sLabW2 labk3sw2.perihelion.lan check inter 2s port 80 
 
 
 

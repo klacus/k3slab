@@ -201,7 +201,7 @@ The domain name part of the `K3SCLUSTERFQDN` variable must match your local netw
 
 The `K3SCLUSTERIP` variable must match the Virtual IP (VIP) configuration for your K3s lab on your network. This is the IP address you will access the K3s Control Plane nodes and the workloads on the cluster through aliases.
 
-VMTEMPLATEFILE VMIMAGEFOLDER !!!!!!!!!! needs to match where the file is located on the local machine
+The `VMTEMPLATEFILE` `VMIMAGEFOLDER` variables need to match where the file and the folder are located on the local machine.
 
 Read throught the `configuration.sh` file and update the values to match your environment. The default values should work for most home networks. Get familiar with the variables and their role in the configuration. The script will use these values to configure the K3s cluster and the VMs.
 
