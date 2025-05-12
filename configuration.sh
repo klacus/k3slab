@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # This file has the configuration details to build the lab environment.
-# This should be the only file you need to edit before deployment.
+# You need to edit this file before deployment. Also consult the README.md file for more information of what other files should be updated.
 
 # K3s nodes. Virtual machine names, static IP and MAC addresses.
 # These host entries must be present in the DHCP server of the local network as static entries and registered with the DNS server also to be resolvable.
@@ -81,11 +81,7 @@ AGENTCPU=2
 # This should match the Linux distribution you used to build the template image.
 VMOSVARIANT="debian12"
 
-# Virtual machine network configuration. 
-# The name of the bridge device you configured to allow the VMs to connect to your network.
-# Bridged device is needed to get a static IP from DHCP (and IPs to register with DNS) for load balancing to work properly. 
-# The VMs should show up on the network as any other physical device. NAT-ed connection will not work.
-VMNETWORKBRIDGE="bridge0"
+# Virtual machine network confisudo update-ca-certificates
 
 # The network model for the VM. This should not change from the default if using QEMU/KVM.
 VMNETWORKMODEL="virtio"
