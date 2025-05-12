@@ -205,6 +205,14 @@ The `VMTEMPLATEFILE` `VMIMAGEFOLDER` variables need to match where the file and 
 
 Read throught the `configuration.sh` file and update the values to match your environment. The default values should work for most home networks. Get familiar with the variables and their role in the configuration. The script will use these values to configure the K3s cluster and the VMs.
 
+!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!! update the custom-value.yaml and other yam files to have the correct FQDNs for certs, ingerss gateway, etc.
+!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!! 
+!!!!!!!!!!!!!!!!!!!!!!!! 
+
 ## Build the VMs
 To build the virtual machines start a shell (like bash). Switch to the `buildnodes` directory and run the `buildnodes.sh` as root. This is the only command that needs to run as root on the machine hosting the VMs. This script will clone the template VM image, sysprep it for the actual nodes and then add them to the registered VMS in QUEMU. It creates an SSH key file that later will be used to remotely install K3s on the nodes.
 
