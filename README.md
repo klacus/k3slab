@@ -75,9 +75,9 @@ Run the following commands: \
   If sudo is already installed then use `sudo su -` otherwise `su -` and enter the root password you set up at install time.
   ```
   apt update
-  apt install -y sudo uuid qemu-system-x86 qemu-kvm bridge-utils libvirt-daemon virt-manager 
+  apt install -y sudo uuid qemu-system-x86 qemu-kvm bridge-utils libvirt-daemon libvirt-daemon-system virtinst libvirt-clients libguestfs-tools virt-manager 
   echo "<YOUR USER NAME> ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/k3slab
-  sudo usermod -aG libvirt <YOUR USER NAME>
+  sudo usermod -aG kvm,libvirt <YOUR USER NAME>
   sudo systemctl start libvirtd
   sudo systemctl enable libvirtd
   ```
