@@ -76,7 +76,7 @@ Run the following commands: \
   ```
   apt update
   apt install -y sudo uuid qemu-system-x86 qemu-kvm bridge-utils libvirt-daemon libvirt-daemon-system virtinst libvirt-clients libguestfs-tools virt-manager 
-  echo "<YOUR USER NAME> ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/k3slab
+  echo "<YOUR USER NAME> ALL=(ALL:ALL) NOPASSWD:ALL" | sudo tee /etc/sudoers.d/labk3s
   sudo usermod -aG kvm,libvirt <YOUR USER NAME>
   sudo systemctl start libvirtd
   sudo systemctl enable libvirtd
@@ -276,19 +276,19 @@ To install a PostgreSQL database instance run the following script in sequence:
 - `deploy-database.sh` to deploy a PostgreSQL database instance.
 - `deploy-pgadmin.sh` to deploy the Pgadmin4 web administration UI to manage your databases.
 
-Once installed you need to export the auto generated admin password. The admin user is what you set up (or lef default) in the `values-custom-cluster.yaml` file in the `owner` field (default is "k3slab").
+Once installed you need to export the auto generated admin password. The admin user is what you set up (or lef default) in the `values-custom-cluster.yaml` file in the `owner` field (default is "labk3s").
 
-Replace the `k3slab` with the user name you put it into the `values-custom-cluster.yaml` file and run the command. Replace teh folder name where you downloaded this repositoty.
+Replace the `labk3s` with the user name you put it into the `values-custom-cluster.yaml` file and run the command. Replace teh folder name where you downloaded this repositoty.
 
-`cd /home/<user>/projects/k3slab`
+`cd /home/<user>/projects/labk3s`
 `source ./configuration.sh`
-`kubectl get secret k3slabsql-cluster-superuser -n hello -o go-template="{{ .data.password | base64decode }}"`
+`kubectl get secret labk3ssql-cluster-superuser -n hello -o go-template="{{ .data.password | base64decode }}"`
 
 Then you will need to use this password to set up the connection within Pgadmin4 web application. for the `postgres` user. This connection is auto generated for the PGAdmin tool and the name is specified in the `values-pgadmin4.yaml` file `firstServer` section.
 
-If you need the application (non superuser) password then export the `k3slabsql-cluster-app` secret the same way. You can use this password and the user you specified in the `values-custom-cluster.yaml` file in the `owner` field. This credential can be used by applications 
+If you need the application (non superuser) password then export the `labk3ssql-cluster-app` secret the same way. You can use this password and the user you specified in the `values-custom-cluster.yaml` file in the `owner` field. This credential can be used by applications 
 
-`kubectl get secret k3slabsql-cluster-app -n hello -o go-template="{{ .data.password | base64decode }}"`
+`kubectl get secret labk3ssql-cluster-app -n hello -o go-template="{{ .data.password | base64decode }}"`
 
 ## Rancher
 Rancher is a tool to manage one or more Kuberenetes installations. 

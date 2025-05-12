@@ -109,4 +109,4 @@ K3SUPVERSION="0.13.8"
 
 # The export for the KUBECONFIG is necessary so all tools access the K3s cluster.
 # This solution does not overwrite the default ~/.kube/config file, but creates a new one in the home directory.
-export KUBECONFIG=~/.kube/k3slab
+export KUBECONFIG=~/.kube/labk3s

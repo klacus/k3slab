@@ -43,17 +43,17 @@ sleep 60
 
 # export root CA so it can be imported to local OS and browsers.
 echo "Exporting certificates"
-kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "ca.crt" | base64decode}}}' > k3slab-ca.crt
-kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.crt" | base64decode}}}' > k3slab-tls.crt
-kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.key" | base64decode}}}' > k3slab-tls.key
+kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "ca.crt" | base64decode}}}' > labk3s-ca.crt
+kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.crt" | base64decode}}}' > labk3s-tls.crt
+kubectl get secret root-secret -n cert-manager -o go-template='{{index .data "tls.key" | base64decode}}}' > labk3s-tls.key
 
 # Deploy the Root CA to K3s nodes.
 echo "Deployin root CA to K3s nodes ..."
 for node in "${K3SNODES[@]}"; do
   echo "Copy Root CA to K3s node: ${node} ..."
-  scp -i ~/.ssh/labk3s ./k3slab-ca.crt root@${node}:/usr/local/share/ca-certificates/
+  scp -i ~/.ssh/labk3s ./labk3s-ca.crt root@${node}:/usr/local/share/ca-certificates/
 
-  echo "Adding k3slab-ca.crt to trusted certs on ${node} ..."
+  echo "Adding labk3s-ca.crt to trusted certs on ${node} ..."
   ssh root@${node} "sudo update-ca-certificates"
 
   echo "Rebooting ${node} to apply new Root CA ..."
@@ -63,12 +63,12 @@ echo "CA cert loaded to all nodes."
 
 # Add Root CA to local machine trusted certs
 echo "Adding Root CA to local machine trusted certs ..."
-sudo cp ./k3slab-ca.crt /usr/local/share/ca-certificates/
+sudo cp ./labk3s-ca.crt /usr/local/share/ca-certificates/
 sudo update-ca-certificates
 echo .
 echo .
 echo .
-echo "!!! Do not forget to import the ./k3slab-ca.crt certificate to your browser! !!!"
+echo "!!! Do not forget to import the ./labk3s-ca.crt certificate to your browser! !!!"
 echo .
 echo .
 echo .

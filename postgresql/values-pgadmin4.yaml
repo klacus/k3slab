@@ -12,7 +12,7 @@ serverDefinitions:
      Group: "Servers"
      Username: "postgres"
      # Password is auto generated.
-     Host: "k3slabsql-cluster-rw"
+     Host: "labk3ssql-cluster-rw"
      Port: "5432"
      SSLMode: "prefer"
      MaintenanceDB: "postgres"
