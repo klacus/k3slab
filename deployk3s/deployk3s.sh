@@ -25,9 +25,6 @@ else
 fi
 
 # Delete KUBECONFIG
-echo "!!! WARNING !!!"
-echo "!!! WARNING !!!"
-echo "!!! WARNING !!!"
 echo " Backing up ${KUBECONFIG} ..."
 cp -f ${KUBECONFIG} ${KUBECONFIG}.${CURRENTTIME}
 echo "!!! WARNING !!! deleting ${KUBECONFIG} file ..."
@@ -52,11 +49,12 @@ if [[ ! -d ~/.kube ]]; then
 fi
 
 # Install the the Server (a.k.a. master) nodes. 
+echo "Server nodes: ${K3SSERVERHOSTS[@]}"
 CURRENTSERVERNODE=0
-for newnode in "${K3SSERVERHOSTS[@]}"; do
+for NEWNODE in "${K3SSERVERHOSTS[@]}"; do
 
   if [[ ${CURRENTSERVERNODE} -eq 0 ]]; then
-    echo "Installing K3s on first Server node: ${newnode}. Creating K3s cluster ..."
+    echo "Installing K3s on first Server node: ${NEWNODE}. Creating K3s cluster ..."
     ./k3sup install \
       --k3s-channel stable \
       --host ${K3SSERVERHOSTS[0]} \
@@ -74,7 +72,7 @@ for newnode in "${K3SSERVERHOSTS[@]}"; do
 # --kube-apiserver-arg feature-gates=GatewayAPI=true
 
   else
-    echo "Installing K3s on additional Server node: ${newnode}. Joining node '${newnode}' to the K3s cluster ..."
+    echo "Installing K3s on additional Server node: ${NEWNODE}. Joining node '${NEWNODE}' to the K3s cluster ..."
     k3sup join \
       --k3s-channel stable \
       --server \
@@ -90,9 +88,10 @@ for newnode in "${K3SSERVERHOSTS[@]}"; do
   ((CURRENTSERVERNODE++))
 done
 
+echo "Agent nodes: ${K3SAGENTHOSTS[@]}"
 CURRENTAGENTNODE=0
-for newnode in "${K3SAGENTHOSTS[@]}"; do
-  echo "Installing K3s on Agent node: ${newnode}"
+for NEWNODE in "${K3SAGENTHOSTS[@]}"; do
+  echo "Installing K3s on Agent node: ${NEWNODE}"
 
   k3sup join \
     --k3s-channel stable \

@@ -81,7 +81,12 @@ AGENTCPU=2
 # This should match the Linux distribution you used to build the template image.
 VMOSVARIANT="debian12"
 
-# Virtual machine network confisudo update-ca-certificates
+# Virtual machine network configuration. 
+# The name of the bridge device you configured to allow the VMs to connect to your network.
+# Bridged device is needed to get a static IP from DHCP (and IPs to register with DNS) for load balancing to work properly. 
+# The VMs should show up on the network as any other physical device. NAT-ed connection will not work.
+VMNETWORKBRIDGE="bridge0"
+
 
 # The network model for the VM. This should not change from the default if using QEMU/KVM.
 VMNETWORKMODEL="virtio"
