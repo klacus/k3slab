@@ -21,7 +21,9 @@ chown ${USER}:${OSVMGROUP} ${NEWFILE}
 
 # enable debugging
 if [[ "${DEBUGVMBUILD}" == "yes"  ]]; then
-  export LIBGUESTFS_DEBUG=1 LIBGUESTFS_TRACE=1
+  export LIBGUESTFS_DEBUG=1 LIBGUESTFS_TRACE=1 BUILDFLAGS=" -v -x "
+else
+  export LIBGUESTFS_DEBUG=0 LIBGUESTFS_TRACE=0 BUILDFLAGS=""
 fi
 
 # Create extra (additional to OS) disk for permanent volumes
@@ -35,7 +37,7 @@ parted ${DATAFILE} print
 
 # Sysprep image
 echo "Sysprep ${NEWFILE} ..."
-virt-sysprep -v -x \
+virt-sysprep ${BUILDFLAGS} \
   --enable customize \
   --operations all,-user-account,-ssh-userdir,-ssh-hostkeys \
   --add ${NEWFILE} \
