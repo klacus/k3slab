@@ -2,6 +2,11 @@
 **/*.crt
 **/*.key
 
+**/cert-manager/cert-manager
+**/cert-manager/cert-manager-*
+
+**/longhorn/longhorn
+**/longhorn/longhorn-*
 
 #
 # Go project files to ignore
