@@ -12,19 +12,19 @@
 # You need to set up the static assignments in your router/firewall/DHCP server. Or your router if that is assigning IP addresses.
 
 # The Server (a.k.a. master) nodes.
-# K3SSERVERHOSTS=(labk3sm1 labk3sm2 labk3sm3)
-# K3SSERVERIPS=("192.168.1.201" "192.168.1.202" "192.168.1.203" )
-# K3SSERVERIMACS=("52:54:00:c4:e6:25" "52:54:00:cb:f4:a8" "52:54:00:94:33:8b")
-K3SSERVERHOSTS=(labk3sm1)
-K3SSERVERIPS=("192.168.1.201")
-K3SSERVERIMACS=("52:54:00:c4:e6:25")
+K3SSERVERHOSTS=(labk3sm1 labk3sm2 labk3sm3)
+K3SSERVERIPS=("192.168.1.201" "192.168.1.202" "192.168.1.203" )
+K3SSERVERIMACS=("52:54:00:c4:e6:25" "52:54:00:cb:f4:a8" "52:54:00:94:33:8b")
+# K3SSERVERHOSTS=(labk3sm1)
+# K3SSERVERIPS=("192.168.1.201")
+# K3SSERVERIMACS=("52:54:00:c4:e6:25")
 # The Agent (a.k.a. worker) nodes.
-# K3SAGENTHOSTS=(labk3sw1 labk3sw2 labk3sw3)
-# K3SAGENTIPS=("192.168.1.204" "192.168.1.205" "192.168.1.206")
-# K3SAGENTMACS=("52:54:00:25:79:40" "52:54:00:f4:ab:cd" "52:54:00:f4:ab:ce")
-K3SAGENTHOSTS=(labk3sw1 labk3sw2)
-K3SAGENTIPS=("192.168.1.204" "192.168.1.205")
-K3SAGENTMACS=("52:54:00:25:79:40" "52:54:00:f4:ab:cd")
+K3SAGENTHOSTS=(labk3sw1 labk3sw2 labk3sw3)
+K3SAGENTIPS=("192.168.1.204" "192.168.1.205" "192.168.1.206")
+K3SAGENTMACS=("52:54:00:25:79:40" "52:54:00:f4:ab:cd" "52:54:00:f4:ab:ce")
+# K3SAGENTHOSTS=(labk3sw1 labk3sw2)
+# K3SAGENTIPS=("192.168.1.204" "192.168.1.205")
+# K3SAGENTMACS=("52:54:00:25:79:40" "52:54:00:f4:ab:cd")
 
 # The Virtual IP and the hostname of the K3s lab Kubernetes cluster. We will use these for load balancing, managing K3s and accessing workload.
 # The K3s cluster FQDN. Used to create the K3s certificate when deploying the cluster.
