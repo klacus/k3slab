@@ -1,11 +1,11 @@
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
-  name: podinfo-cert
-  namespace: hello # Or the namespace where you want the Secret to be created
+  name: argocdui-cert
+  namespace: argocd # Or the namespace where you want the Secret to be created
 spec:
-  secretName: podinfo-cert # The name of the Secret that will store the certificate
-  commonName: podinfo.services.labk3s.perihelion.lan
+  secretName: argocdui-cert # The name of the Secret that will store the certificate
+  commonName: argocdui.services.labk3s.perihelion.lan
   subject:
     organizations:
       - Home Lab 
@@ -14,7 +14,7 @@ spec:
   duration: 720h # 30 days (720 hours)
   renewBefore: 240h # 10 days (240 hours)
   dnsNames:
-    - podinfo.services.labk3s.perihelion.lan
+    - argocdui.services.labk3s.perihelion.lan
   issuerRef:
     # This should reference your cert-manager Issuer or ClusterIssuer.
     # Replace 'my-issuer' with the name of your Issuer or ClusterIssuer.
@@ -32,23 +32,10 @@ spec:
     size: 4096 # Or 4096 for stronger security
 ---
 apiVersion: gateway.networking.k8s.io/v1
-kind: GatewayClass
-metadata:
-  name: traefik # A unique name for this GatewayClass
-spec:
-  controllerName: "traefik.io/gateway-controller" # Replace with the actual controller name
-  # description: "A simple GatewayClass for HTTP traffic" # Optional description
-  # parametersRef: # Optional: Reference to a parameters resource
-  #   group: example.com
-  #   kind: GatewayClassConfig
-  #   name: traefik-parameters
-  #   namespace: default # Required if parametersRef is namespaced
---- 
-apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
-  name: my-gateway
-  namespace: hello # Or the namespace where you want your gateway to run
+  name: argocdui-gw
+  namespace: argocd # Or the namespace where you want your gateway to run
 spec:
   gatewayClassName: traefik # Replace with the name of your GatewayClass
   listeners:
@@ -64,8 +51,8 @@ spec:
       tls:
         mode: Terminate
         certificateRefs:
-          - name: podinfo-cert
-            namespace: hello
+          - name: argocdui-cert
+            namespace: argocd
       allowedRoutes:
         namespaces:
           from: Same
@@ -73,16 +60,16 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: podinfo-https-route
-  namespace: hello
+  name: argocdui-https-route
+  namespace: argocd
 spec:
   parentRefs:
-    - name: my-gateway
+    - name: argocdui-gw
       sectionName: https
       kind: Gateway
 
   hostnames:
-    - podinfo.services.labk3s.perihelion.lan
+    - argocdui.services.labk3s.perihelion.lan
 
   rules:
     - matches:
@@ -91,27 +78,27 @@ spec:
             value: /
 
       backendRefs:
-        - name: podinfo
-          namespace: hello
+        - name: argocd-server
+          namespace: argocd
           port: 80
 ---
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: podinfo-http-route
-  namespace: hello # Or the namespace where you want your gateway to run
+  name: argocdui-http-route
+  namespace: argocd # Or the namespace where you want your gateway to run
 spec:
   parentRefs:
     # This should reference your deployed Gateway resource.
-    # Replace 'my-gateway' with the actual name of your Gateway.
+    # Replace 'argocdui-gw' with the actual name of your Gateway.
     # You might also need to specify the namespace of the Gateway
     # if it's not in the same namespace as the HTTPRoute.
-    - name: my-gateway
+    - name: argocdui-gw
       sectionName: http
       kind: Gateway
-      namespace: hello
+      namespace: argocd
   hostnames:
-    - podinfo.services.labk3s.perihelion.lan
+    - argocdui.services.labk3s.perihelion.lan
   rules:
     - filters:
         - type: RequestRedirect
