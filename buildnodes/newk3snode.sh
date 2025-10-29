@@ -14,6 +14,7 @@ VMGRAPHICS=${11}
 SSHKEYFILE=${12}
 VMUSER=${13}
 TEMPLATEHOSTNAME=${14}
+VMIMAGEFOLDER=${15}
 
 echo "Creating new WM image ${NEWFILE} from ${TEMPLATE} ..."
 cp -f ${TEMPLATE} ${NEWFILE}
@@ -27,7 +28,7 @@ else
 fi
 
 # Create extra (additional to OS) disk for permanent volumes
-DATAFILE="/vm/vms/${NEWNAME}-data.qcow2"
+DATAFILE="${VMIMAGEFOLDER}/${NEWNAME}-data.qcow2"
 DISKUUID=$(uuid)
 rm -f ${DATAFILE}
 qemu-img create -f qcow2 -o preallocation=full ${DATAFILE} 10G

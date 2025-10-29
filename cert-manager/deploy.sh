@@ -54,10 +54,10 @@ for node in "${K3SNODES[@]}"; do
   scp -i ~/.ssh/labk3s ./labk3s-ca.crt root@${node}:/usr/local/share/ca-certificates/
 
   echo "Adding labk3s-ca.crt to trusted certs on ${node} ..."
-  ssh root@${node} "sudo update-ca-certificates"
+  ssh -i ~/.ssh/labk3s root@${node} "update-ca-certificates"
 
   echo "Rebooting ${node} to apply new Root CA ..."
-  ssh root@${node} "reboot"
+  ssh -i ~/.ssh/labk3s root@${node} "reboot"
 done
 echo "CA cert loaded to all nodes."
 

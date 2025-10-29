@@ -27,3 +27,5 @@ sleep 60
 
 echo "Installing Helm chart from local folder ..."
 helm install chartmuseum ./chartmuseum --namespace chartmuseum --create-namespace --wait -f ./values-custom.yaml
+
+echo "installing Chartmuseum UI..."
