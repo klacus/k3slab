@@ -22,5 +22,8 @@ tar -xvzf ./${PACKAGE}
 
 helm uninstall chartmuseum --namespace chartmuseum 
 
+echo "Waiting for 60 seconds to allow resources to be cleaned up ..."
+sleep 60
+
 echo "Installing Helm chart from local folder ..."
 helm install chartmuseum ./chartmuseum --namespace chartmuseum --create-namespace --wait -f ./values-custom.yaml
