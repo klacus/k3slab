@@ -15,7 +15,7 @@ echo "Extracting new Helm chart files ..."
 tar -xvzf ./longhorn-1.8.1.tgz
 
 
-echo "Installing Hem chart from local folder ..."
+echo "Installing Helm chart from local folder ..."
 helm install longhorn ./longhorn --namespace longhorn-system --create-namespace --wait -f ./values-custom.yaml
 
 echo "Please wait 2-5 minutes for all the longhorn pods initialize. Look for pods like csi-* "

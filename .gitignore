@@ -8,6 +8,9 @@
 **/longhorn/longhorn
 **/longhorn/longhorn-*
 
+**/chartmuseum/chartmuseum
+**/chartmuseum/chartmuseum-*.tgz
+
 #
 # Go project files to ignore
 #

@@ -1,0 +1,81 @@
+env:
+  open:
+    STORAGE: local
+
+## Ingress for load balancer
+ingress:
+  enabled: true
+  pathType: "ImplementationSpecific"
+  ## Chartmuseum Ingress labels
+  ##
+  labels: {}
+    # dns: "route53"
+
+  ## Chartmuseum Ingress annotations
+  ##
+  annotations:
+    # add an annotation indicating the issuer to use.
+    cert-manager.io/cluster-issuer: my-ca-issuer
+    # configuring the certificate
+    cert-manager.io/common-name: "chartmuseum.services.labk3s.perihelion.lan/"
+    cert-manager.io/subject-organizations: "Home Lab"
+    cert-manager.io/subject-organizationalunits: "K3s Lab Container Chartmuseum"
+    cert-manager.io/duration: 720h
+    cert-manager.io/renew-before: 240h
+    cert-manager.io/usages: "digital signature,key agreement,server auth, client auth"
+
+  ## Chartmuseum Ingress hostnames
+  ## Must be provided if Ingress is enabled
+  ##
+  hosts: 
+    - name: chartmuseum.services.labk3s.perihelion.lan
+      path: /
+      tls: true
+    #   ## If TLS is set to true, you must declare what secret will store the key/certificate for TLS
+    #   ## Secrets must be added manually to the namespace
+      tlsSecret: chartmuseum-cert
+
+  # For Kubernetes >= 1.18 you should specify the ingress-controller via the field ingressClassName
+  # See https://kubernetes.io/blog/2020/04/02/improvements-to-the-ingress-api-in-kubernetes-1.18/#specifying-the-class-of-an-ingress
+  ingressClassName: traefik
+
+## Labels to apply to all resources
+##
+commonLabels: 
+  app.kubernetes.io/name: chartmuseum
+  app.kubernetes.io/instance: chartmuseum-k3slab
+
+resources:
+#  limits:
+#    cpu: 100m
+#    memory: 128Mi
+ requests:
+   cpu: 80m
+   memory: 64Mi
+
+persistence:
+  enabled: true
+  accessMode: ReadWriteOnce
+  size: 8Gi
+  labels: {}
+    # name: value
+  path: /storage
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  # existingClaim:
+
+  ## Chartmuseum data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  volumeName: chartmuseum-pv
+  # pv:
+  #   enabled: true
+  #   capacity:
+  #     storage: 8Gi
+  #   accessMode: ReadWriteOnce
