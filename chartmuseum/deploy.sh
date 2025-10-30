@@ -28,4 +28,6 @@ sleep 60
 echo "Installing Helm chart from local folder ..."
 helm install chartmuseum ./chartmuseum --namespace chartmuseum --create-namespace --wait -f ./values-custom.yaml
 
-echo "installing Chartmuseum UI..."
+# echo "installing Chartmuseum UI..."
+# kubectl apply -f ./ui/ui.yaml
+# kubectl apply -f ./ui/gateway.yaml

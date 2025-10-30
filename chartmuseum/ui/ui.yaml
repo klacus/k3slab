@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chartmuseumui
+  namespace: chartmuseum
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chartmuseumui
+  template:
+    metadata:
+      labels:
+        app: chartmuseumui
+    spec:
+      containers:
+      - name: chartmuseumui
+        image: moreillon/chartmuseum-gui:latest
+        imagePullPolicy: IfNotPresent # You should use IfNotPresent in any other environment than development.
+        ports: 
+          - name: web
+            containerPort: 3000
+        env:
+          - name: CHART_MUSEUM_URL
+            value: "http://chartmuseum.chartmuseum.svc.cluster.local:8080"
+        securityContext:
+          runAsUser: 1000       # Specify a non-root user ID
+          runAsGroup: 1000      # Specify a non-root group ID
+          allowPrivilegeEscalation: false # Prevent privilege escalation
+          runAsNonRoot: true       # Ensure the container runs as a non-root user
+        resources:
+          requests:
+            cpu: 100m
+            memory: 8Mi
+          limits:
+            cpu: 300m
+            memory: 512Mi
+        # livenessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: 8080
+        #   initialDelaySeconds: 5
+        #   periodSeconds: 10
+        # readinessProbe:
+        #   httpGet:
+        #     path: /healthz
+        #     port: 8080
+        #   initialDelaySeconds: 2
+        #   periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chartmuseumui
+  namespace: chartmuseum
+spec:
+  type: ClusterIP
+  selector:
+    app: chartmuseumui
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 3000
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: chartmuseumui
+#   namespace: chartmuseum
+#   annotations:
+#     # add an annotation indicating the issuer to use.
+#     cert-manager.io/cluster-issuer: my-ca-issuer
+#     # configuring the certificate
+#     cert-manager.io/common-name: "chartmuseumui.services.labk3s.perihelion.lan/"
+#     cert-manager.io/subject-organizations: "Home Lab"
+#     cert-manager.io/subject-organizationalunits: "K3s Lab"
+#     cert-manager.io/duration: 720h
+#     cert-manager.io/renew-before: 240h
+#     cert-manager.io/usages: "digital signature,key agreement,server auth, client auth"
+# spec:
+#   rules:
+#   - host: "chartmuseumui.services.labk3s.perihelion.lan"
+#     http:
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: chartmuseumui
+#             port:
+#               number: 80
+#   tls:
+#   - hosts:
+#     - chartmuseumui.services.labk3s.perihelion.lan
+#     secretName: chartmuseumui-cert
