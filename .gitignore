@@ -11,6 +11,8 @@
 **/chartmuseum/chartmuseum
 **/chartmuseum/chartmuseum-*.tgz
 
+**/argocd/argo-cd
+**/argocd/argo-cd-*.tgz
 #
 # Go project files to ignore
 #
