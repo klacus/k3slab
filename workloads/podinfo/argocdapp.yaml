@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: podinfo
+  namespace: argocd
+spec:
+  destination:
+    namespace: hello
+    name: kind
+  project: default
+  sources:
+    # Chart from Chart Repo
+    - chart: podinfo
+      repoURL: https://chartmuseum.chartmuseum.services.labk3s.perihelion.lan/
+      targetRevision: 1.0.0
+      helm:
+        valueFiles:
+        - $values/values-custom-ut.yaml
+    # Values from Git
+    - repoURL: 'https://github.com/klacus/k3slab'
+      targetRevision: development
+      path: workloads/podinfo/helm-values-custom.yaml
+      ref: values
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
